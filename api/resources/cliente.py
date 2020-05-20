@@ -1,59 +1,71 @@
 from flask_restful import Resource, reqparse
 from models.cliente import ClienteModel
-
-clientes = [
-    {
-        'cliente_id': 1,
-        'nome': 'Carlos',
-        'cpf': 112,
-        'renda': 800.00
-    },
-    {
-        'cliente_id': 2,
-        'nome': 'Jose',
-        'cpf': 102,
-        'renda': 600.00
-    },
-    {
-        'cliente_id': 3,
-        'nome': 'Ana',
-        'cpf': 992,
-        'renda': 1100.00
-    }
-]
+from db import get_db
 
 class Clientes(Resource):
     def get(self):
-        return {'clientes': clientes}
+        lista_clientes = []
+    
+        db = get_db()
+        cursor = db.cursor()
+        cursor.execute("SELECT * FROM cliente;")
+        clientes = cursor.fetchall()       
+
+        for cliente in clientes:
+            id_cliente = cliente[0]
+            nome = cliente[1]
+            cpf = cliente[2]
+            renda = cliente[3]
+
+            cliente_atual = ClienteModel(id_cliente, nome, cpf, renda)
+            lista_clientes.append(cliente_atual)
+        
+        return {'clientes': [cliente.json() for cliente in lista_clientes]}
 
 
 class Cliente(Resource):
-
     argumentos = reqparse.RequestParser()
     argumentos.add_argument('nome')
     argumentos.add_argument('cpf')
     argumentos.add_argument('renda')
-
+    '''
     def find_cliente(cliente_id):
         for cliente in clientes:
             if cliente['cliente_id'] == cliente_id:
                 return cliente
         return None
-    
+    '''
+     
     def get(self, cliente_id):
-        cliente = Cliente.find_cliente(cliente_id)
+        #cliente = Cliente.find_cliente(cliente_id)
+
+        db = get_db()
+        cursor = db.cursor()
+        cursor.execute("SELECT * FROM cliente WHERE id_cliente = %s;", (cliente_id,))
+        cliente = cursor.fetchone()
 
         if cliente is not None:
-            return cliente
+            nome = cliente[1]
+            cpf = cliente[2]
+            renda = cliente[3]
+
+            cliente_encontrado = ClienteModel(cliente_id, nome, cpf, renda)
+            return cliente_encontrado.json()
         return{'message':'Cliente não encontrado'}, 404
     
     def post(self, cliente_id):
-       dados = Cliente.argumentos.parse_args()
-       obj_cliente = ClienteModel(cliente_id, **dados)
-       novo_cliente = obj_cliente.json()
+        dados = Cliente.argumentos.parse_args()
+        obj_cliente = ClienteModel(cliente_id, **dados)
+        novo_cliente = obj_cliente.json()
+        
+        db = get_db()
+        cursor = db.cursor()
+        cursor.execute("INSERT INTO cliente (nome, cpf, renda) \
+                        VALUES (%s,%s,%s)", \
+                        (obj_cliente.nome, obj_cliente.cpf, obj_cliente.renda))
+        db.commit()
 
-       clientes.append(novo_cliente)
-       return novo_cliente, 200 
+        return novo_cliente, 200 
 
     def put(self, cliente_id):
         pass

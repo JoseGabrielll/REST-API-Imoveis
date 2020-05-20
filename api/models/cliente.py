@@ -12,9 +12,3 @@ class ClienteModel:
             'cpf': self.cpf,
             'renda': self.renda
         }
-        
-    def procura_dados(self, parametro, dado):
-        for cliente in clientes:
-            if cliente['parametro'] == dado:
-                return cliente
-        return None
