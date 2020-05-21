@@ -12,12 +12,12 @@ class Clientes(Resource):
         clientes = cursor.fetchall()       
 
         for cliente in clientes:
-            id_cliente = cliente[0]
+            cliente_id = cliente[0]
             nome = cliente[1]
             cpf = cliente[2]
             renda = cliente[3]
 
-            cliente_atual = ClienteModel(id_cliente, nome, cpf, renda)
+            cliente_atual = ClienteModel(cliente_id, nome, cpf, renda)
             lista_clientes.append(cliente_atual)
         
         return {'clientes': [cliente.json() for cliente in lista_clientes]}
@@ -28,17 +28,9 @@ class Cliente(Resource):
     argumentos.add_argument('nome')
     argumentos.add_argument('cpf')
     argumentos.add_argument('renda')
-    '''
-    def find_cliente(cliente_id):
-        for cliente in clientes:
-            if cliente['cliente_id'] == cliente_id:
-                return cliente
-        return None
-    '''
      
     def get(self, cliente_id):
-        #cliente = Cliente.find_cliente(cliente_id)
-
+        
         db = get_db()
         cursor = db.cursor()
         cursor.execute("SELECT * FROM cliente WHERE id_cliente = %s;", (cliente_id,))
