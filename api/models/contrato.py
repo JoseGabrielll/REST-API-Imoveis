@@ -1,14 +1,14 @@
 class ContratoModel:
-    def __init__(self, contrato_id, cliente_id, imovel_id):
-        self.contrato_id = contrato_id
-        self.cliente_id = cliente_id
-        self.imovel_id = imovel_id
+    def __init__(self, id_contrato, id_cliente, id_imovel):
+        self.id_contrato = id_contrato
+        self.id_cliente = id_cliente
+        self.id_imovel = id_imovel
     
     def json(self):
         return {
-            'contrato_id': self.contrato_id,
-            'cliente_id': self.cliente_id,
-            'imovel_id': self.imovel_id
+            'id_contrato': self.id_contrato,
+            'id_cliente': self.id_cliente,
+            'id_imovel': self.id_imovel
         }
     
     #def find_contrato()
