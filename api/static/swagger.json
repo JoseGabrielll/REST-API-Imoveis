@@ -1,0 +1,709 @@
+{
+  "swagger": "2.0",
+  "schemes": [
+    "https",
+    "http"
+  ],
+  "host": "localhost:8085",
+  "basePath": "/api-imoveis/v1",
+  "info": {
+    "version": "1.0.0",
+    "title": "API de Imóveis",
+    "description": "Administra clientes, imóveis e contratos entre imóveis e clientes.",
+    "termsOfService": "http://localhost:8085/api-imoveis/v1/termos-uso",
+    "contact": {
+      "name": "Suporte",
+      "url": "http://localhost:8085/api-imoveis/v1/suporte",
+      "email": "suporte@suporte.com"
+    },
+    "license": {
+      "name": "Open source",
+      "url": "http://opensource.org/licenses/??"
+    }
+  },
+  "tags": [
+    {
+      "name": "clientes",
+      "description": "Funções relacionadas a clientes"
+    },
+    {
+      "name": "imoveis",
+      "description": "Funções relacionadas a imóveis"
+    },
+    {
+      "name": "contratos",
+      "description": "Funções relacionadas a contratos"
+    }
+  ],
+  "paths": {
+    "/clientes": {
+      "get": {
+        "tags": [
+          "clientes"
+        ],
+        "summary": "Retorna todos os clientes",
+        "description": "Retorna todos os clientes cadastrados no sistema",
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "encontraClientes",
+        "parameters": [
+          {
+            "name": "lista_clientes",
+            "in": "query",
+            "description": "Listagem de todos os clientes",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operação realizada com sucesso",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Cliente"
+              }
+            }
+          },
+          "404": {
+            "description": "Clientes não encontrados"
+          }
+        }
+      }
+    },
+    "/clientes/{id_cliente}": {
+      "get": {
+        "tags": [
+          "clientes"
+        ],
+        "summary": "Retorna um cliente",
+        "description": "Retorna um cliente de acordo com o id passado",
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "encontraCliente",
+        "parameters": [
+          {
+            "name": "id_cliente",
+            "in": "path",
+            "description": "Identificador do cliente",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operação realizada com sucesso",
+            "schema": {
+              "$ref": "#/definitions/Cliente"
+            }
+          },
+          "404": {
+            "description": "Cliente não encontrado"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "clientes"
+        ],
+        "summary": "Cadastra cliente",
+        "description": "Cadastra um novo cliente",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "cadastraCliente",
+        "parameters": [
+          {
+            "name": "id_cliente",
+            "in": "path",
+            "description": "Identificador do cliente",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "in": "body",
+            "name": "cliente_",
+            "description": "Cliente que será adicionado",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Cliente"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Cadastro efetuado com sucesso",
+            "schema": {
+              "$ref": "#/definitions/Cliente"
+            }
+          },
+          "400": {
+            "description": "Requisição inválida"
+          },
+          "500": {
+            "description": "Erro interno no servidor"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "clientes"
+        ],
+        "summary": "Atualiza cliente",
+        "description": "Atualiza o cliente pelo id",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "atualizaCliente",
+        "parameters": [
+          {
+            "name": "id_cliente",
+            "in": "path",
+            "description": "Identificador do cliente",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "in": "body",
+            "name": "cliente_",
+            "description": "Cliente atualizado",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Cliente"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Atualização efetuada com sucesso",
+            "schema": {
+              "$ref": "#/definitions/Cliente"
+            }
+          },
+          "400": {
+            "description": "Usuário inválido"
+          },
+          "404": {
+            "description": "Usuário não encontrado"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "clientes"
+        ],
+        "summary": "Deleta cliente",
+        "description": "Deleta o cliente pelo id",
+        "operationId": "deletaCliente",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id_cliente",
+            "in": "path",
+            "description": "The name that needs to be deleted",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deletado com sucesso",
+            "schema": {
+              "$ref": "#/definitions/Cliente"
+            }
+          },
+          "400": {
+            "description": "Id de cliente inválido"
+          },
+          "404": {
+            "description": "Cliente não encontrado"
+          }
+        }
+      }
+    },
+    "/imoveis": {
+      "get": {
+        "tags": [
+          "imoveis"
+        ],
+        "summary": "Retorna todos os imoveis",
+        "description": "Retorna todos os imoveis cadastrados no sistema",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "encontraImoveis",
+        "parameters": [
+          {
+            "name": "lista_imoveis",
+            "in": "query",
+            "description": "Listagem de todos os imoveis",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operação realizada com sucesso",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Imovel"
+              }
+            }
+          },
+          "404": {
+            "description": "Imoveis não encontrados"
+          }
+        }
+      }
+    },
+    "/imoveis/{id_imovel}": {
+      "get": {
+        "tags": [
+          "imoveis"
+        ],
+        "summary": "Retorna um imovel",
+        "description": "Retorna um imovel de acordo com o id passado",
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "encontraImovel",
+        "parameters": [
+          {
+            "name": "id_imovel",
+            "in": "path",
+            "description": "Identificador do imovel",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operação realizada com sucesso",
+            "schema": {
+              "$ref": "#/definitions/Imovel"
+            }
+          },
+          "404": {
+            "description": "Imovel não encontrado"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "imoveis"
+        ],
+        "summary": "Cadastra imovel",
+        "description": "Cadastra um novo imovel",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "cadastraImovel",
+        "parameters": [
+          {
+            "name": "id_imovel",
+            "in": "path",
+            "description": "Identificador do imovel",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "in": "body",
+            "name": "imovel_",
+            "description": "Imovel que será adicionado",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Imovel"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Cadastro efetuado com sucesso",
+            "schema": {
+              "$ref": "#/definitions/Imovel"
+            }
+          },
+          "400": {
+            "description": "Requisição inválida"
+          },
+          "500": {
+            "description": "Erro interno no servidor"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "imoveis"
+        ],
+        "summary": "Atualiza imovel",
+        "description": "Atualiza o imovel pelo id",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "atualizaImovel",
+        "parameters": [
+          {
+            "name": "id_imovel",
+            "in": "path",
+            "description": "Identificador do imovel",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "in": "body",
+            "name": "imovel_",
+            "description": "Imovel atualizado",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Imovel"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Atualização efetuada com sucesso",
+            "schema": {
+              "$ref": "#/definitions/Imovel"
+            }
+          },
+          "400": {
+            "description": "Imovel inválido"
+          },
+          "404": {
+            "description": "Imovel não encontrado"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "imoveis"
+        ],
+        "summary": "Deleta Imovel",
+        "description": "Deleta o imovel pelo id",
+        "operationId": "deletaImovel",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id_imovel",
+            "in": "path",
+            "description": "The name that needs to be deleted",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deletado com sucesso",
+            "schema": {
+              "$ref": "#/definitions/Imovel"
+            }
+          },
+          "400": {
+            "description": "Id de imovel inválido"
+          },
+          "404": {
+            "description": "Imovel não encontrado"
+          }
+        }
+      }
+    },
+    "/contratos": {
+      "get": {
+        "tags": [
+          "contratos"
+        ],
+        "summary": "Retorna todos os contratos",
+        "description": "Retorna todos os contratos cadastrados no sistema",
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "encontraContratos",
+        "parameters": [
+          {
+            "name": "lista_contratos",
+            "in": "query",
+            "description": "Listagem de todos os contratos",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operação realizada com sucesso",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Contrato"
+              }
+            }
+          },
+          "404": {
+            "description": "Contratos não encontrados"
+          }
+        }
+      }
+    },
+    "/contratos/{id_contrato}": {
+      "get": {
+        "tags": [
+          "contratos"
+        ],
+        "summary": "Retorna um contrato",
+        "description": "Retorna um contrato de acordo com o id passado",
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "encontraContrato",
+        "parameters": [
+          {
+            "name": "id_contrato",
+            "in": "path",
+            "description": "Identificador do contrato",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operação realizada com sucesso",
+            "schema": {
+              "$ref": "#/definitions/Contrato"
+            }
+          },
+          "404": {
+            "description": "Contrato não encontrado"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "contratos"
+        ],
+        "summary": "Cadastra contratos",
+        "description": "Cadastra um novo contrato",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "cadastraContrato",
+        "parameters": [
+          {
+            "name": "id_contrato",
+            "in": "path",
+            "description": "Identificador do contrato",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "in": "body",
+            "name": "contrato_",
+            "description": "Contrato que será adicionado",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Contrato"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Cadastro efetuado com sucesso",
+            "schema": {
+              "$ref": "#/definitions/Contrato"
+            }
+          },
+          "400": {
+            "description": "Requisição inválida"
+          },
+          "500": {
+            "description": "Erro interno no servidor"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "contratos"
+        ],
+        "summary": "Atualiza contrato",
+        "description": "Atualiza o contrato pelo id",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "atualizaContrato",
+        "parameters": [
+          {
+            "name": "id_contrato",
+            "in": "path",
+            "description": "Identificador do contrato",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "in": "body",
+            "name": "contrato_",
+            "description": "Contrato atualizado",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Contrato"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Atualização efetuada com sucesso",
+            "schema": {
+              "$ref": "#/definitions/Contrato"
+            }
+          },
+          "400": {
+            "description": "Contrato inválido"
+          },
+          "404": {
+            "description": "Contrato não encontrado"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "contratos"
+        ],
+        "summary": "Deleta contrato",
+        "description": "Deleta o contrato pelo id",
+        "operationId": "deletaContrato",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id_contrato",
+            "in": "path",
+            "description": "The name that needs to be deleted",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deletado com sucesso",
+            "schema": {
+              "$ref": "#/definitions/Contrato"
+            }
+          },
+          "400": {
+            "description": "Id de contrato inválido"
+          },
+          "404": {
+            "description": "Contrato não encontrado"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Cliente": {
+      "type": "object",
+      "properties": {
+        "id_cliente": {
+          "type": "integer",
+          "format": "int64",
+          "example": "831"
+        },
+        "nome": {
+          "type": "string",
+          "example": "Gabriel"
+        },
+        "renda": {
+          "type": "integer",
+          "format": "int64",
+          "example": "1.200"
+        }
+      }
+    },
+    "Imovel": {
+      "type": "object",
+      "properties": {
+        "id_imovel": {
+          "type": "integer",
+          "format": "int64",
+          "example": "241"
+        },
+        "valor": {
+          "type": "integer",
+          "format": "int64",
+          "example": "1000"
+        },
+        "situacao": {
+          "type": "number",
+          "format": "int32",
+          "example": "2"
+        }
+      }
+    },
+    "Contrato": {
+      "type": "object",
+      "properties": {
+        "id_contrato": {
+          "type": "integer",
+          "format": "int64",
+          "example": "635"
+        },
+        "cliente": {
+          "$ref": "#/definitions/Cliente"
+        },
+        "imovel": {
+          "$ref": "#/definitions/Imovel"
+        }
+      }
+    }
+  }
+}
